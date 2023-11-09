@@ -1,0 +1,67 @@
+---
+title: "Writing Functions"
+author: "Ruijie He"
+date: "2023-11-09"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(rvest)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = 0.6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.color = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+## Do something simple
+
+```{r}
+x_vec = rnorm(30, mean = 5, sd = 3)
+
+(x_vec - mean(x_vec)) / sd(x_vec)
+```
+
+I want a **function** to compute z-score
+
+```{r}
+z_scores = function(x) { ## Setting z-score equal to a whole function instead of computation
+  
+  if(!is.numeric(x)) {
+    stop("Input must be numeric") # Stop with the error message in ""
+  } # If statement to set numeric number only
+  
+  if(length(x)  < 3) {
+    stop("Input must have at least three numbers")
+  }
+  
+  z = (x - mean(x)) / sd(x)
+ 
+   return(z)
+  
+} # The body of the function
+
+z_scores(x_vec)
+```
+
+Try my function on some other things (these should give errors)
+
+```{r, error = TRUE}
+z_scores(3)
+z_scores("my name is jeff") # Cannot take mean of non-numerical data
+z_scores(mtcars) # Cannot take mean of a dataset
+z_scores(c(TRUE, TRUE, FALSE, TRUE))
+```
+
