@@ -50,21 +50,21 @@ scale_fill_discrete = scale_fill_viridis_d
 ## Do something simple
 
 ``` r
-x_vec = rnorm(30, mean = 5, sd = 3)
+x_vec = rnorm(30, mean = 5, sd = 3) # Input data of the function
 
 (x_vec - mean(x_vec)) / sd(x_vec)
 ```
 
-    ##  [1]  0.39572376 -0.29905501 -0.72202172 -0.53314513  0.65243937 -0.71696985
-    ##  [7] -0.06819058 -1.32424939 -0.77403122 -0.43210355 -2.28132887  0.11991293
-    ## [13]  0.28041737 -0.75664137 -1.16147330 -1.16965821  0.58587150  2.16777230
-    ## [19]  1.02504123  1.11726976  0.41849725 -0.47864271 -0.97402235  1.17288305
-    ## [25] -0.87040359  0.64774737  0.95976673  0.37432697  1.13129540  1.51297187
+    ##  [1]  0.16155157 -1.24714363 -1.23649109  0.18353803  0.24319865  1.46457821
+    ##  [7]  0.77466234  0.46337115 -0.36384102  0.62212574 -1.76160903 -1.42929081
+    ## [13] -0.85810715  0.01364349 -1.25737403  1.07980045  1.47617930  1.61329227
+    ## [19] -0.06810653 -1.40688201  0.71893830  0.10109751  0.82112416 -0.08983868
+    ## [25]  0.04367674  1.15110163 -0.51781102  0.62612505 -1.85500294  0.53349334
 
 I want a **function** to compute z-score
 
 ``` r
-z_scores = function(x) { ## Setting z-score equal to a whole function instead of computation
+z_scores = function(x) { # Setting z-score equal to a whole function instead of computation
   
   if(!is.numeric(x)) {
     stop("Input must be numeric") # Stop with the error message in ""
@@ -74,7 +74,7 @@ z_scores = function(x) { ## Setting z-score equal to a whole function instead of
     stop("Input must have at least three numbers")
   }
   
-  z = (x - mean(x)) / sd(x)
+  z = (x - mean(x)) / sd(x) # Return objects
  
    return(z)
   
@@ -83,11 +83,11 @@ z_scores = function(x) { ## Setting z-score equal to a whole function instead of
 z_scores(x_vec)
 ```
 
-    ##  [1]  0.39572376 -0.29905501 -0.72202172 -0.53314513  0.65243937 -0.71696985
-    ##  [7] -0.06819058 -1.32424939 -0.77403122 -0.43210355 -2.28132887  0.11991293
-    ## [13]  0.28041737 -0.75664137 -1.16147330 -1.16965821  0.58587150  2.16777230
-    ## [19]  1.02504123  1.11726976  0.41849725 -0.47864271 -0.97402235  1.17288305
-    ## [25] -0.87040359  0.64774737  0.95976673  0.37432697  1.13129540  1.51297187
+    ##  [1]  0.16155157 -1.24714363 -1.23649109  0.18353803  0.24319865  1.46457821
+    ##  [7]  0.77466234  0.46337115 -0.36384102  0.62212574 -1.76160903 -1.42929081
+    ## [13] -0.85810715  0.01364349 -1.25737403  1.07980045  1.47617930  1.61329227
+    ## [19] -0.06810653 -1.40688201  0.71893830  0.10109751  0.82112416 -0.08983868
+    ## [25]  0.04367674  1.15110163 -0.51781102  0.62612505 -1.85500294  0.53349334
 
 Try my function on some other things (these should give errors)
 
@@ -114,3 +114,96 @@ z_scores(c(TRUE, TRUE, FALSE, TRUE))
 ```
 
     ## Error in z_scores(c(TRUE, TRUE, FALSE, TRUE)): Input must be numeric
+
+## Multipleoutputs
+
+``` r
+mean_and_sd = function(x) {
+  
+  if(!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if(length(x)  < 3) {
+    stop("Input must have at least three numbers")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+  
+# Organize the multiple outputs
+  
+  tibble( #Make these output a daat frame
+    mean = mean_x,
+    sd = sd_x
+  )
+  
+}
+```
+
+Check out the functions
+
+``` r
+x_vec = rnorm(100, mean = 3, sd = 4) # Creating new vector
+mean_and_sd(x_vec)
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  3.18  3.81
+
+## Multiple inputs
+
+I’d like to do this with a function
+
+``` r
+sim_data = # Simulated dataset
+  tibble(
+    x = rnorm(n = 100, mean = 4, sd = 3)
+  ) # Create data frame
+
+sim_data %>% 
+  summarize(
+    mean = mean(x),
+    sd = sd(x)
+  ) # Give the data frame computations of mean and sd
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  3.57  3.01
+
+Translate the above into functions
+
+``` r
+sim_mean_sd = function(sample_size, mu = 3, sigma = 4) {# Three inputs with given default value
+  sim_data = # Simulated dataset
+  tibble(
+    x = rnorm(n = sample_size, mean = mu, sd = sigma)
+  )
+  
+  sim_data %>% 
+    summarize(
+      mean = mean(x),
+      sd = sd(x)
+      )
+} # Body of function
+
+sim_mean_sd(sample_size = 100, mu = 6, sigma = 3) # Positional matching
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  5.78  3.15
+
+``` r
+sim_mean_sd(mu = 6, sample_size = 100, sigma = 3) # The new value will overwrite the defalut value
+```
+
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1  5.96  2.94
